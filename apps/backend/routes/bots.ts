@@ -45,7 +45,12 @@ const upload = multer({
 });
 
 router.get("/", authMiddleware, async (req, res) => {
-  const bots = await prismaClient.bot.findMany();
+  console.log("HIT ALL BOT");
+  const bots = await prismaClient.bot.findMany({
+    where:{
+      ownerId: req.userId
+    }
+  });
   res.json(bots);
 });
 
@@ -156,6 +161,7 @@ if (!finalTitle) {
       case "notion":
         if (!content) throw new Error("Content required for Notion");
         const notionPageId = content.split("-").pop(); // Extract page ID from Notion URL
+        console.log(notionPageId);
         extractedContent = await extractTextFromNotionPage(notionPageId);
         break;
       default:

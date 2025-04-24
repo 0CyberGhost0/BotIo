@@ -27,7 +27,7 @@ const DATA_SOURCES = [
   { id: "pdf", name: ".pdf", emoji: "📄", sourceType: "pdf" },
   { id: "txt", name: ".txt", emoji: "📝", sourceType: "txt" },
   { id: "text", name: "Text", emoji: "🔤", sourceType: "text" },
-  { id: "notion", name: "Notion", emoji: "📓", sourceType: "notion" },
+  // { id: "notion", name: "Notion", emoji: "📓", sourceType: "notion" },
   { id: "docs", name: "Docs", emoji: "📰", sourceType: "docs" },
   { id: "youtube", name: "Youtube", emoji: "📺", sourceType: "youtube" },
 ];
@@ -256,187 +256,200 @@ const BotDetail = () => {
   if (!bot) return <div className="p-6 text-gray-400">Loading bot data...</div>;
 
   return (
-    <div className="p-6 space-y-6 bg-[#0f0f0f] min-h-screen text-white">
-      <h1 className="text-2xl font-bold">{bot.name}</h1>
-
-      <div className="flex space-x-4 overflow-x-auto mb-8 border-b border-gray-700 pb-2">
+    <div className="p-6 space-y-6 bg-gradient-to-br from-black via-[#0f0f0f] to-black min-h-screen text-white">
+      <h1 className="text-3xl font-bold text-indigo-400">{bot.name}</h1>
+  
+      {/* Tab Switcher */}
+      <div className="flex space-x-3 overflow-x-auto mb-8 border-b border-gray-700 pb-3">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition duration-200 ease-in-out shadow-sm ${activeTab === tab.id
-              ? "bg-indigo-600 text-white"
-              : "text-gray-400 hover:bg-gray-800"
-              }`}
+            className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm ${
+              activeTab === tab.id
+                ? "bg-indigo-600 text-white"
+                : "text-gray-400 hover:bg-gray-800 hover:text-white"
+            }`}
           >
             {tab.icon}
             <span className="ml-2">{tab.name}</span>
           </button>
         ))}
       </div>
-
+  
       {activeTab === "data" && (
-        <section>
-          <h2 className="text-lg font-semibold mb-2">Train your bot with knowledge</h2>
-          <p className="text-gray-400 mb-4">Choose a data source to add:</p>
+  <section className="m-10">
+    {/* Heading */}
+    <div className="mb-6">
+      <h2 className="text-xl font-semibold mb-1 text-white">Train your bot with knowledge</h2>
+      <p className="text-gray-400 text-sm">Choose a data source to add and teach your bot.</p>
+    </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-10 gap-4">
-            {DATA_SOURCES.map((source) => (
-              <Dialog
-                key={source.id}
-                open={selectedSource === source.id}
-                onOpenChange={(open) => {
-                  if (open) {
-                    setSelectedSource(source.id);
-                  } else {
-                    setSelectedSource(null);
-                    setInputValue(null); // Reset input when closing
-                  }
-                }}
-              >
-                <DialogTrigger asChild>
-                  <button
-                    className="flex flex-col items-center p-4 border border-gray-700 bg-gray-900 rounded-lg hover:bg-gray-800 transition"
-                  >
-                    <div className="text-2xl mb-2">{source.emoji}</div>
-                    <span className="text-sm font-medium text-white">{source.name}</span>
-                  </button>
-                </DialogTrigger>
-                <DialogContent className="bg-[#111] border border-gray-700 text-white rounded-xl p-6 space-y-6 max-w-md">
-                  <DialogHeader>
-                    <DialogTitle className="text-xl font-semibold">
-                      Upload via {source.name}
-                    </DialogTitle>
-                    <DialogDescription className="text-gray-400 text-sm">
-                      {getDialogDescription(source.id)}
-                    </DialogDescription>
-                  </DialogHeader>
+    {/* Data Sources Grid */}
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5">
+      {DATA_SOURCES.map((source) => (
+        <Dialog
+          key={source.id}
+          open={selectedSource === source.id}
+          onOpenChange={(open) => {
+            setSelectedSource(open ? source.id : null);
+            setInputValue(null);
+          }}
+        >
+          <DialogTrigger asChild>
+            <button className="flex flex-col items-center justify-center p-4 border border-gray-700 bg-gray-900 rounded-xl hover:bg-gray-800 transition-all shadow-md">
+              <div className="text-2xl mb-2">{source.emoji}</div>
+              <span className="text-sm font-medium text-white">{source.name}</span>
+            </button>
+          </DialogTrigger>
+          <DialogContent className="bg-[#111] border border-gray-700 text-white rounded-xl p-6 space-y-6 max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-semibold">
+                Upload via {source.name}
+              </DialogTitle>
+              <DialogDescription className="text-gray-400 text-sm">
+                {getDialogDescription(source.id)}
+              </DialogDescription>
+            </DialogHeader>
 
-                  <div>{renderDialogContent(source.id, setInputValue)}</div>
+            <div>{renderDialogContent(source.id, setInputValue)}</div>
 
-                  <button
-                    className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 transition rounded-md text-white font-medium shadow-md"
-                    onClick={() => handleTrainBot(source.id)}
-                  >
-                    🚀 Train Bot
-                  </button>
-                </DialogContent>
-              </Dialog>
-            ))}
-          </div>
+            <button
+              className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium shadow transition-all"
+              onClick={() => handleTrainBot(source.id)}
+            >
+              🚀 Train Bot
+            </button>
+          </DialogContent>
+        </Dialog>
+      ))}
+    </div>
 
-          <div className="mt-8">
-            <h3 className="text-md font-semibold mb-4">Data Sources</h3>
-            <div className="overflow-auto border border-gray-700 rounded-lg bg-gray-900">
-              <table className="w-full text-sm text-left text-gray-300">
-                <thead className="bg-gray-800">
-                  <tr>
-                    <th className="p-3 font-semibold">Type</th>
-                    <th className="p-3 font-semibold">Url</th>
-                    <th className="p-3 font-semibold">Status</th>
-                    <th className="p-3 font-semibold">Status Message</th>
-                    <th className="p-3 font-semibold">Last Updated</th>
-                    <th className="p-3 text-right font-semibold">...</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {dataSources.length > 0 ? (
-                    dataSources.map((source, idx) => (
-                      <tr key={source.id || idx} className="border-b border-gray-800 hover:bg-gray-800 transition">
-                        <td className="p-3">{source.emoji || "📄"} {source.type}</td>
-                        <td className="p-3">{source.title}</td>
-                        <td className="p-3">
-                          <div
-                            className={`w-20 h-2 rounded-full ${source.status === "Pending"
-                              ? "bg-yellow-500"
-                              : source.status === "Completed"
-                                ? "bg-green-500"
-                                : "bg-red-500"
-                              }`}
-                          ></div>
-                        </td>
-                        <td className="p-3">
-                          <span
-                            className={`px-2 py-0.5 rounded-full text-xs font-medium ${source.status === "Pending"
-                              ? "bg-yellow-900 text-yellow-300"
-                              : source.status === "Completed"
-                                ? "bg-green-900 text-green-300"
-                                : "bg-red-900 text-red-300"
-                              }`}
-                          >
-                            {source.status || "Completed"}
-                          </span>
-                        </td>
-                        <td className="p-3 text-gray-400">{new Date(source.lastUpdated).toLocaleString()}</td>
-                        <td className="p-3 text-right text-gray-400">...</td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={6} className="p-4 text-center text-gray-500">
-                        No data sources found. Add a data source to train your bot.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-      )}
+    {/* Data Source Table */}
+    <div className="mt-10">
+      <h3 className="text-md font-semibold text-white mb-3">Current Data Sources</h3>
+      <div className="overflow-auto rounded-xl border border-gray-700 bg-gray-900 shadow-lg">
+        <table className="min-w-full text-sm text-left text-gray-300">
+          <thead className="bg-gray-800">
+            <tr>
+              <th className="p-3 font-semibold text-gray-200">Type</th>
+              <th className="p-3 font-semibold text-gray-200">Title</th>
+              <th className="p-3 font-semibold text-gray-200">Status</th>
+              <th className="p-3 font-semibold text-gray-200">Message</th>
+              <th className="p-3 font-semibold text-gray-200">Updated</th>
+              <th className="p-3 text-right font-semibold text-gray-200">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dataSources.length > 0 ? (
+              dataSources.map((source, idx) => (
+                <tr key={source.id || idx} className="border-b border-gray-800 hover:bg-gray-700 transition-all">
+                  <td className="p-3">{source.emoji || "📄"} {source.type}</td>
+                  <td className="p-3">{source.title}</td>
+                  <td className="p-3">
+                    <div className={`w-20 h-2 rounded-full ${
+                      source.status === "Pending"
+                        ? "bg-yellow-500"
+                        : source.status === "Completed"
+                        ? "bg-green-500"
+                        : "bg-red-500"
+                    }`} />
+                  </td>
+                  <td className="p-3">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      source.status === "Pending"
+                        ? "bg-yellow-900 text-yellow-300"
+                        : source.status === "Completed"
+                        ? "bg-green-900 text-green-300"
+                        : "bg-red-900 text-red-300"
+                    }`}>
+                      {source.status || "Completed"}
+                    </span>
+                  </td>
+                  <td className="p-3 text-gray-400">
+                    {new Date(source.lastUpdated).toLocaleString()}
+                  </td>
+                  <td className="p-3 text-right text-gray-400">
+                    <button className="text-indigo-400 hover:text-indigo-300 font-medium">
+                      View
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={6} className="p-4 text-center text-gray-500">
+                  No data sources found. Add one to begin training your bot.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+)}
 
-      {activeTab === "playground" && (
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-6 border border-gray-700 bg-gray-900 rounded-lg">
-            <h2 className="text-lg font-semibold mb-4">Preview</h2>
-            <div className="place-items-center">
-            <ChatBot botId={botId as string} initialChatId="" />
-            </div>
-          </div>
-          <div className="p-6 border border-gray-700 bg-gray-900 rounded-lg space-y-4">
-            <h2 className="text-lg font-semibold mb-2">Customize</h2>
-            {["Name & Description", "Instructions to AI", "Chat"].map((section) => (
-              <div
-                key={section}
-                className="p-4 border border-gray-700 rounded-lg flex justify-between items-center bg-gray-800"
-              >
-                <h3 className="text-md font-medium">{section}</h3>
-                <button className="text-gray-400 hover:text-white">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="6 9 12 15 18 9" />
-                  </svg>
-                </button>
-              </div>
-            ))}
 
-          </div>
-        </section>
-      )}
-      {activeTab === "embed" && (
-  <section className="space-y-6">
-    <div className="p-6 border border-gray-700 bg-gray-900 rounded-lg">
-      <h2 className="text-lg font-semibold mb-4">Embed your bot on your website</h2>
-      <p className="text-gray-400 mb-4">Choose how you want to integrate your bot into your website.</p>
+  
+
+{activeTab === "playground" && (
+  <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    
+    {/* Preview Section */}
+    <div className="p-6 border border-gray-700 bg-gradient-to-br from-gray-900 via-black to-gray-950 rounded-2xl shadow-md">
+      <h2 className="text-xl font-semibold mb-4 text-indigo-400">Live Preview</h2>
+      <div className="bg-black/50 border border-gray-800 rounded-xl p-4 h-[500px] overflow-hidden">
+        <ChatBot botId={botId as string} initialChatId="" />
+      </div>
+    </div>
+
+    {/* Customization Section */}
+    <div className="p-6 border border-gray-700 bg-gradient-to-br from-gray-900 via-black to-gray-950 rounded-2xl shadow-md space-y-6">
+      <h2 className="text-xl font-semibold text-indigo-400">Customize Your Bot</h2>
+
+      {["Name & Description", "Instructions to AI", "Chat Appearance"].map((section) => (
+        <div
+          key={section}
+          className="flex justify-between items-center p-4 rounded-lg bg-gray-800 hover:bg-gray-700 transition cursor-pointer border border-gray-700"
+        >
+          <h3 className="text-sm sm:text-base font-medium">{section}</h3>
+          <button className="text-gray-400 hover:text-white transition">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+        </div>
+      ))}
+    </div>
+  </section>
+)}
+
+{activeTab === "embed" && (
+  <section className="space-y-8">
+    <div className="p-8 border border-gray-700 bg-gray-900 rounded-lg">
+      <h2 className="text-2xl font-semibold mb-6 text-white">Embed Your Bot on Your Website</h2>
+      <p className="text-gray-400 mb-6">Choose a method to integrate your chatbot into your website, either using an iframe or a chat bubble script.</p>
       
-      <div className="flex mb-6 border-b border-gray-700">
+      <div className="flex mb-8 border-b border-gray-700">
         <button 
-          className={`px-4 py-2 font-medium ${embedOption === 'iframe' ? 'text-indigo-500 border-b-2 border-indigo-500' : 'text-gray-400'}`}
+          className={`px-6 py-3 font-medium ${embedOption === 'iframe' ? 'text-indigo-500 border-b-2 border-indigo-500' : 'text-gray-400'}`}
           onClick={() => setEmbedOption('iframe')}
         >
           Option 1: Embed Bot (iframe)
         </button>
         <button 
-          className={`px-4 py-2 font-medium ${embedOption === 'script' ? 'text-indigo-500 border-b-2 border-indigo-500' : 'text-gray-400'}`}
+          className={`px-6 py-3 font-medium ${embedOption === 'script' ? 'text-indigo-500 border-b-2 border-indigo-500' : 'text-gray-400'}`}
           onClick={() => setEmbedOption('script')}
         >
           Option 2: Chat Bubble (script)
@@ -444,8 +457,8 @@ const BotDetail = () => {
       </div>
       
       {embedOption === 'iframe' ? (
-        <div className="bg-gray-800 p-4 rounded-lg">
-          <div className="flex justify-between items-center mb-2">
+        <div className="bg-gray-800 p-6 rounded-lg shadow-md">
+          <div className="flex justify-between items-center mb-4">
             <span className="text-sm text-gray-400">HTML Embed Code (iframe)</span>
             <button
               onClick={() => {
@@ -453,12 +466,11 @@ const BotDetail = () => {
   src="http://localhost:3000/embed/${botId}" 
   width="400" 
   height="600" 
-  "
-></iframe>`;
+  style="border: none;"></iframe>`;
                 navigator.clipboard.writeText(code);
                 // toast.success("Code copied to clipboard!");
               }}
-              className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white py-1 px-3 rounded"
+              className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded"
             >
               Copy Code
             </button>
@@ -468,12 +480,12 @@ const BotDetail = () => {
   src="http://localhost:3000/embed/${botId}" 
   width="400" 
   height="600"
-></iframe>`}
+  style="border: none;"></iframe>`}
           </pre>
         </div>
       ) : (
-        <div className="bg-gray-800 p-4 rounded-lg">
-          <div className="flex justify-between items-center mb-2">
+        <div className="bg-gray-800 p-6 rounded-lg shadow-md">
+          <div className="flex justify-between items-center mb-4">
             <span className="text-sm text-gray-400">JavaScript Embed Code (Chat Bubble)</span>
             <button
               onClick={() => {
@@ -481,7 +493,7 @@ const BotDetail = () => {
                 navigator.clipboard.writeText(code);
                 toast.success("Code copied to clipboard!");
               }}
-              className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white py-1 px-3 rounded"
+              className="text-xs bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded"
             >
               Copy Code
             </button>
@@ -489,91 +501,71 @@ const BotDetail = () => {
           <pre className="bg-[#1a1a1a] p-4 rounded-lg overflow-x-auto text-sm text-gray-300">
             {`<script id="${botId}" src="http://localhost:3000/embed.js" open="false" openDelay="2000"></script>`}
           </pre>
-          <div className="mt-4 p-3 bg-gray-700 rounded-lg text-sm text-gray-300 border-l-4 border-indigo-500">
-            <span className="font-semibold block mb-1">Script Parameters:</span>
-            <ul className="list-disc list-inside space-y-1 text-gray-300">
-              <li><code className="bg-gray-800 px-1 rounded">id</code> - Your bot ID (required)</li>
-              <li><code className="bg-gray-800 px-1 rounded">open</code> - Set to "true" to automatically open the chat (default: false)</li>
-              <li><code className="bg-gray-800 px-1 rounded">openDelay</code> - Delay in milliseconds before auto-opening the chat (default: 0)</li>
+          <div className="mt-6 p-4 bg-gray-700 rounded-lg text-sm text-gray-300 border-l-4 border-indigo-500">
+            <span className="font-semibold block mb-2">Script Parameters:</span>
+            <ul className="list-disc list-inside space-y-2">
+              <li><code className="bg-gray-800 px-2 rounded">id</code> - Your bot ID (required)</li>
+              <li><code className="bg-gray-800 px-2 rounded">open</code> - Set to "true" to auto open the chat (default: false)</li>
+              <li><code className="bg-gray-800 px-2 rounded">openDelay</code> - Millisecond delay before auto-opening the chat (default: 0)</li>
             </ul>
           </div>
         </div>
       )}
     </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div className="p-6 border border-gray-700 bg-gray-900 rounded-lg">
-        <h2 className="text-lg font-semibold mb-4">Preview</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="p-8 border border-gray-700 bg-gray-900 rounded-lg">
+        <h2 className="text-lg font-semibold mb-6 text-white">Preview</h2>
         {embedOption === 'iframe' ? (
-          <div className="border border-gray-700 rounded-lg overflow-hidden place-items-center " style={{ height: "500px" }}>
-          
+          <div className="border border-gray-700 rounded-lg overflow-hidden" style={{ height: "500px" }}>
             <ChatBot botId={botId as string} botName={bot.name} />
           </div>
         ) : (
           <div className="border border-gray-700 rounded-lg overflow-hidden flex items-center justify-center" style={{ height: "500px" }}>
-            <div className="p-6 text-center">
-              <div className="mb-4 bg-gray-800 p-4 rounded-full inline-flex items-center justify-center">
+            <div className="text-center">
+              <div className="mb-6 bg-gray-800 p-6 rounded-full inline-flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-500">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-white mb-2">Chat Bubble Preview</h3>
+              <h3 className="text-xl font-medium text-white mb-4">Chat Bubble Preview</h3>
               <p className="text-gray-400 mb-4">The chat bubble will appear in the bottom-right corner of your website.</p>
-              <div className="flex flex-col items-center">
-                <div className="bg-gray-800 px-3 py-2 rounded-lg mb-3 text-sm text-gray-300">
-                  Need help? Chat with me!
-                </div>
-                <div className="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                  </svg>
-                </div>
+              <div className="bg-gray-800 px-4 py-3 rounded-lg text-sm text-gray-300 mb-4">
+                Need help? Chat with me!
+              </div>
+              <div className="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
               </div>
             </div>
           </div>
         )}
       </div>
 
-      <div className="p-6 border border-gray-700 bg-gray-900 rounded-lg space-y-4">
-        <h2 className="text-lg font-semibold mb-2">Integration Tips</h2>
+      <div className="p-8 border border-gray-700 bg-gray-900 rounded-lg space-y-6">
+        <h2 className="text-lg font-semibold mb-6 text-white">Integration Tips</h2>
         
-        <div className="p-4 border border-gray-700 rounded-lg bg-gray-800">
-          <h3 className="text-md font-medium mb-3 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            Where to add the code
-          </h3>
+        <div className="p-6 border border-gray-700 rounded-lg bg-gray-800">
+          <h3 className="text-md font-medium mb-4 text-indigo-400">Where to Add the Code</h3>
           <p className="text-gray-300 text-sm">
             {embedOption === 'iframe' 
-              ? "Add the iframe code wherever you want the chat window to appear on your page." 
-              : "Add the script tag at the end of your HTML body tag for optimal loading performance."}
+              ? "Place the iframe code where you want the chat window to appear on your page."
+              : "Place the script tag at the bottom of the HTML body for optimal performance."}
           </p>
         </div>
         
-        <div className="p-4 border border-gray-700 rounded-lg bg-gray-800">
-          <h3 className="text-md font-medium mb-3 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-            Best Practices
-          </h3>
-          <ul className="text-gray-300 text-sm space-y-2">
+        <div className="p-6 border border-gray-700 rounded-lg bg-gray-800">
+          <h3 className="text-md font-medium mb-4 text-indigo-400">Best Practices</h3>
+          <ul className="text-gray-300 text-sm space-y-4">
             <li className="flex items-start">
-              <span className="text-indigo-400 mr-2">•</span> 
-              Test on different screen sizes to ensure responsive behavior
+              <span className="text-indigo-400 mr-2">•</span> Test for responsiveness across devices
             </li>
             <li className="flex items-start">
-              <span className="text-indigo-400 mr-2">•</span> 
-              {embedOption === 'iframe' 
-                ? "Consider adjusting iframe dimensions for different devices" 
-                : "The chat bubble works on all devices and adjusts automatically"}
+              <span className="text-indigo-400 mr-2">•</span> {embedOption === 'iframe' ? "Adjust iframe dimensions for different screen sizes" : "The chat bubble automatically adjusts to various screen sizes"}
             </li>
             <li className="flex items-start">
-              <span className="text-indigo-400 mr-2">•</span> 
-              {embedOption === 'iframe' 
-                ? "Add appropriate title and aria attributes for accessibility" 
-                : "Place it where it won't interfere with important page elements"}
+              <span className="text-indigo-400 mr-2">•</span> {embedOption === 'iframe' ? "Add accessibility features like title and aria attributes" : "Ensure the chat bubble doesn’t interfere with key elements of your page"}
             </li>
           </ul>
         </div>
@@ -583,87 +575,89 @@ const BotDetail = () => {
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            Read full integration documentation
+            Read Full Integration Documentation
           </a>
         </div>
       </div>
     </div>
   </section>
 )}
-      {activeTab === "history" && (
-        
-        <section className="space-y-6">
-          <div className="bg-yellow-100 bg-opacity-30 text-black border border-yellow-400 rounded-md p-4 text-sm">
-            ⚠️ This is dummy data for display purposes only.
-          </div>
-          <div className="p-6 border border-gray-700 bg-gray-900 rounded-lg">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-semibold">Chat History</h2>
-              <div className="flex space-x-3">
-                <select className="bg-gray-800 text-white border border-gray-600 rounded-md px-3 py-1 text-sm">
-                  <option>Last 7 days</option>
-                  <option>Last 30 days</option>
-                  <option>Last 90 days</option>
-                  <option>All time</option>
-                </select>
-                <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md text-sm">
-                  Export
-                </button>
-              </div>
-            </div>
 
-            <div className="overflow-auto border border-gray-700 rounded-lg bg-gray-800">
-              <table className="w-full text-sm text-left text-gray-300">
-                <thead className="bg-gray-700">
-                  <tr>
-                    <th className="p-3 font-semibold">User</th>
-                    <th className="p-3 font-semibold">First Message</th>
-                    <th className="p-3 font-semibold">Messages</th>
-                    <th className="p-3 font-semibold">Date</th>
-                    <th className="p-3 font-semibold">Duration</th>
-                    <th className="p-3 text-right font-semibold">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {[
-                    { id: 1, user: "Anonymous User", firstMsg: "How do I reset my password?", messages: 6, date: "Apr 22, 2025", time: "10:23 AM", duration: "4m 12s" },
-                    { id: 2, user: "john@example.com", firstMsg: "Can you help me with product setup?", messages: 12, date: "Apr 21, 2025", time: "3:45 PM", duration: "8m 30s" },
-                    { id: 3, user: "Anonymous User", firstMsg: "What are your business hours?", messages: 3, date: "Apr 21, 2025", time: "11:17 AM", duration: "1m 45s" },
-                    { id: 4, user: "sarah@company.co", firstMsg: "I need help with my order #45392", messages: 9, date: "Apr 20, 2025", time: "2:30 PM", duration: "6m 22s" },
-                    { id: 5, user: "Anonymous User", firstMsg: "Do you ship internationally?", messages: 4, date: "Apr 19, 2025", time: "9:15 AM", duration: "2m 05s" },
-                    { id: 6, user: "mike@test.org", firstMsg: "Is there a free trial available?", messages: 7, date: "Apr 18, 2025", time: "5:48 PM", duration: "5m 33s" },
-                    { id: 7, user: "Anonymous User", firstMsg: "How do I cancel my subscription?", messages: 5, date: "Apr 17, 2025", time: "4:12 PM", duration: "3m 19s" }
-                  ].map((chat) => (
-                    <tr key={chat.id} className="border-b border-gray-700 hover:bg-gray-700 transition">
-                      <td className="p-3 font-medium">{chat.user}</td>
-                      <td className="p-3">{chat.firstMsg}</td>
-                      <td className="p-3">{chat.messages}</td>
-                      <td className="p-3 text-gray-400">{chat.date} at {chat.time}</td>
-                      <td className="p-3">{chat.duration}</td>
-                      <td className="p-3 text-right">
-                        <button className="text-indigo-400 hover:text-indigo-300 font-medium">
-                          View
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+{activeTab === "history" && (
+  <section className="space-y-6">
+    <div className="bg-yellow-100 bg-opacity-30 text-black border border-yellow-400 rounded-md p-4 text-sm">
+      ⚠️ This is dummy data for display purposes only.
+    </div>
+    
+    <div className="p-6 border border-gray-700 bg-gray-900 rounded-lg shadow-lg">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold text-white">Chat History</h2>
+        <div className="flex space-x-3">
+          <select className="bg-gray-800 text-white border border-gray-600 rounded-md px-3 py-1 text-sm focus:ring-indigo-500 focus:border-indigo-500">
+            <option>Last 7 days</option>
+            <option>Last 30 days</option>
+            <option>Last 90 days</option>
+            <option>All time</option>
+          </select>
+          <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm shadow-md transition duration-200">
+            Export
+          </button>
+        </div>
+      </div>
 
-            <div className="flex justify-between items-center mt-4 text-sm text-gray-400">
-              <div>Showing 7 of 125 conversations</div>
-              <div className="flex space-x-2">
-                <button className="px-3 py-1 border border-gray-700 rounded-md hover:bg-gray-700">Previous</button>
-                <button className="px-3 py-1 bg-gray-700 rounded-md">1</button>
-                <button className="px-3 py-1 border border-gray-700 rounded-md hover:bg-gray-700">2</button>
-                <button className="px-3 py-1 border border-gray-700 rounded-md hover:bg-gray-700">3</button>
-                <button className="px-3 py-1 border border-gray-700 rounded-md hover:bg-gray-700">Next</button>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+      <div className="overflow-auto border border-gray-700 rounded-lg bg-gray-800 shadow-md">
+        <table className="w-full text-sm text-left text-gray-300">
+          <thead className="bg-gray-700">
+            <tr>
+              <th className="p-3 font-semibold">User</th>
+              <th className="p-3 font-semibold">First Message</th>
+              <th className="p-3 font-semibold">Messages</th>
+              <th className="p-3 font-semibold">Date</th>
+              <th className="p-3 font-semibold">Duration</th>
+              <th className="p-3 text-right font-semibold">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              { id: 1, user: "Anonymous User", firstMsg: "How do I reset my password?", messages: 6, date: "Apr 22, 2025", time: "10:23 AM", duration: "4m 12s" },
+              { id: 2, user: "john@example.com", firstMsg: "Can you help me with product setup?", messages: 12, date: "Apr 21, 2025", time: "3:45 PM", duration: "8m 30s" },
+              { id: 3, user: "Anonymous User", firstMsg: "What are your business hours?", messages: 3, date: "Apr 21, 2025", time: "11:17 AM", duration: "1m 45s" },
+              { id: 4, user: "sarah@company.co", firstMsg: "I need help with my order #45392", messages: 9, date: "Apr 20, 2025", time: "2:30 PM", duration: "6m 22s" },
+              { id: 5, user: "Anonymous User", firstMsg: "Do you ship internationally?", messages: 4, date: "Apr 19, 2025", time: "9:15 AM", duration: "2m 05s" },
+              { id: 6, user: "mike@test.org", firstMsg: "Is there a free trial available?", messages: 7, date: "Apr 18, 2025", time: "5:48 PM", duration: "5m 33s" },
+              { id: 7, user: "Anonymous User", firstMsg: "How do I cancel my subscription?", messages: 5, date: "Apr 17, 2025", time: "4:12 PM", duration: "3m 19s" }
+            ].map((chat) => (
+              <tr key={chat.id} className="border-b border-gray-700 hover:bg-gray-700 transition duration-200">
+                <td className="p-3 font-medium">{chat.user}</td>
+                <td className="p-3">{chat.firstMsg}</td>
+                <td className="p-3">{chat.messages}</td>
+                <td className="p-3 text-gray-400">{chat.date} at {chat.time}</td>
+                <td className="p-3">{chat.duration}</td>
+                <td className="p-3 text-right">
+                  <button className="text-indigo-400 hover:text-indigo-300 font-medium">
+                    View
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="flex justify-between items-center mt-4 text-sm text-gray-400">
+        <div>Showing 7 of 125 conversations</div>
+        <div className="flex space-x-2">
+          <button className="px-3 py-1 border border-gray-700 rounded-md hover:bg-gray-700 transition duration-200">Previous</button>
+          <button className="px-3 py-1 bg-gray-700 rounded-md text-white">1</button>
+          <button className="px-3 py-1 border border-gray-700 rounded-md hover:bg-gray-700 transition duration-200">2</button>
+          <button className="px-3 py-1 border border-gray-700 rounded-md hover:bg-gray-700 transition duration-200">3</button>
+          <button className="px-3 py-1 border border-gray-700 rounded-md hover:bg-gray-700 transition duration-200">Next</button>
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+
 
       {activeTab === "analytics" && (
         <section className="space-y-6">

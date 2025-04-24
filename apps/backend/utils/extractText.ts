@@ -36,7 +36,9 @@ function extractTextFromRawText(text) {
 }
 
 async function extractTextFromDocx(filePath) {
+  console.log("DOCS UPLOADED");
   const result = await mammoth.extractRawText({ path: filePath });
+  console.log(result.value);
   return result.value;
 }
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -163,7 +165,9 @@ async function extractTextFromURL(url) {
   
 
 async function extractTextFromNotionPage(pageId) {
+  console.log(pageId);
   const blocks = await notion.blocks.children.list({ block_id: pageId });
+  console.log(blocks);
   return blocks.results.map(block => {
     const type = block.type;
     return block[type]?.text?.[0]?.plain_text || '';

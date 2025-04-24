@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { CheckCircle, XCircle } from "lucide-react";
 
@@ -61,42 +61,49 @@ const PlansPage = () => {
   ];
 
   return (
-    <div className="p-6 bg-gray-900 text-white">
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-gray-100">Subscription Plans</h1>
-        <p className="text-gray-400 mt-2">Choose the plan that best fits your needs</p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-950 text-white py-12 px-6">
+      <div className="max-w-7xl mx-auto text-center mb-12">
+        <h1 className="text-4xl font-bold text-indigo-400">Subscription Plans</h1>
+        <p className="text-gray-400 mt-3 text-lg">Choose the plan that best fits your needs</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
         {plans.map((plan) => (
           <div
             key={plan.name}
-            className={`rounded-2xl overflow-hidden shadow-lg border ${
-              plan.highlighted ? "bg-indigo-800 text-white" : "bg-gray-800 border-gray-700"
-            } transition-all transform hover:scale-105 hover:shadow-xl`}
+            className={`rounded-3xl border shadow-xl overflow-hidden transition-transform transform hover:scale-[1.02] backdrop-blur-lg ${
+              plan.highlighted
+                ? "bg-indigo-800 border-indigo-600"
+                : "bg-gray-800 border-gray-700"
+            }`}
           >
             {plan.highlighted && (
-              <div className="bg-indigo-700 text-white text-center text-sm py-1">
-                MOST POPULAR
+              <div className="bg-indigo-700 text-white text-xs font-medium text-center py-2 tracking-wide">
+                ⭐ MOST POPULAR
               </div>
             )}
-            <div className="p-6">
-              <h2 className="text-2xl font-semibold">{plan.name}</h2>
-              <div className="mt-3 flex items-baseline space-x-2">
+
+            <div className="p-8">
+              <h2 className="text-2xl font-semibold mb-2">{plan.name}</h2>
+              <div className="flex items-end gap-1 mt-2">
                 <span className="text-4xl font-bold">{plan.price}</span>
-                <span className="text-lg text-gray-400">/{plan.period}</span>
+                <span className="text-gray-400 text-sm mb-1">/ {plan.period}</span>
               </div>
               <p className="text-gray-400 mt-4">{plan.description}</p>
 
-              <ul className="mt-6 space-y-4">
+              <ul className="mt-6 space-y-4 text-sm">
                 {plan.features.map((feature) => (
-                  <li key={feature.name} className="flex items-start space-x-2">
+                  <li key={feature.name} className="flex items-center gap-2">
                     {feature.included ? (
-                      <CheckCircle className="h-5 w-5 text-green-400" />
+                      <CheckCircle className="w-5 h-5 text-green-400" />
                     ) : (
-                      <XCircle className="h-5 w-5 text-gray-500" />
+                      <XCircle className="w-5 h-5 text-gray-500" />
                     )}
-                    <span className={feature.included ? "text-gray-300" : "text-gray-600"}>
+                    <span
+                      className={
+                        feature.included ? "text-gray-200" : "text-gray-600 line-through"
+                      }
+                    >
                       {feature.name}
                     </span>
                   </li>
@@ -104,12 +111,12 @@ const PlansPage = () => {
               </ul>
 
               <button
-                className={`mt-8 w-full py-3 px-6 rounded-xl font-semibold text-white transition-all duration-300 ${
+                className={`mt-8 w-full py-3 px-6 rounded-xl font-semibold transition-all duration-300 ${
                   plan.highlighted
-                    ? "bg-indigo-600 hover:bg-indigo-700"
+                    ? "bg-white text-indigo-700 hover:bg-gray-100"
                     : plan.name === "Free"
                     ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
-                    : "bg-indigo-500 hover:bg-indigo-600"
+                    : "bg-indigo-600 hover:bg-indigo-700"
                 }`}
               >
                 {plan.cta}
