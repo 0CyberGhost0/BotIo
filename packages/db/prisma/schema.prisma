@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  clerkId   String   @unique
+  email     String   @unique
+  password  String
+  name      String
+  bots      Bot[]    // One user can own many bots
+  chats     Chat[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Bot {
+  id          String    @id @default(uuid())
+  name        String
+  description String
+  model       String    // e.g., "gpt-4o"
+  ownerId     String
+  owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  sources     Source[]
+  chats       Chat[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Source {
+  id        String     @id @default(uuid())
+  type      SourceType
+  title     String?
+  content   String
+  botId     String
+  bot       Bot        @relation(fields: [botId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Chat {
+  id          String        @id @default(uuid())
+  botId       String
+  userId      String?       // Nullable for anonymous users
+  isEmbedded  Boolean       @default(false)
+  messages    ChatMessage[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  bot         Bot           @relation(fields: [botId], references: [id])
+  user        User?         @relation(fields: [userId], references: [id])
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  role      Role
+  content   String
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+enum SourceType {
+  url
+  pdf
+  text
+  notion
+  sheet
+  docs
+  youtube
+}
+
+enum Role {
+  user
+  assistant
+}
