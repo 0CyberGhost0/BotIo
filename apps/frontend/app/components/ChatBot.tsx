@@ -155,7 +155,7 @@ const ChatBot = ({ botId, initialChatId }: ChatbotProps) => {
   };
 
   return (
-    <div className="flex flex-col h-[500px] w-[370px] border border-gray-700 rounded-lg overflow-hidden bg-[#1f1f1f] text-white shadow-xl animate-slide-in-right">
+    <div className="flex flex-col h-[600px] w-[560px] border border-gray-700 rounded-lg overflow-hidden bg-[#1f1f1f] text-white shadow-xl animate-slide-in-right">
       <div className="p-4 border-b border-gray-700 bg-[#2a2a2a]">
         <h2 className="font-semibold flex items-center">
           <div className="w-6 h-6 bg-indigo-600 rounded-full flex items-center justify-center mr-2 text-white text-xs">

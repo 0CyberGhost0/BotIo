@@ -399,7 +399,7 @@ const BotDetail = () => {
     {/* Preview Section */}
     <div className="p-6 border border-gray-700 bg-gradient-to-br from-gray-900 via-black to-gray-950 rounded-2xl shadow-md">
       <h2 className="text-xl font-semibold mb-4 text-indigo-400">Live Preview</h2>
-      <div className="bg-black/50 border border-gray-800 rounded-xl p-4 h-[500px] overflow-hidden">
+      <div className="bg-black/50 border border-gray-800 rounded-xl p-4 h-[630px] overflow-hidden place-self-center ">
         <ChatBot botId={botId as string} initialChatId="" />
       </div>
     </div>
@@ -446,27 +446,28 @@ const BotDetail = () => {
           className={`px-6 py-3 font-medium ${embedOption === 'iframe' ? 'text-indigo-500 border-b-2 border-indigo-500' : 'text-gray-400'}`}
           onClick={() => setEmbedOption('iframe')}
         >
-          Option 1: Embed Bot (iframe)
+          Option 1: Embed Bot 
         </button>
         <button 
           className={`px-6 py-3 font-medium ${embedOption === 'script' ? 'text-indigo-500 border-b-2 border-indigo-500' : 'text-gray-400'}`}
           onClick={() => setEmbedOption('script')}
         >
-          Option 2: Chat Bubble (script)
+          Option 2: Chat Bubble
         </button>
       </div>
       
       {embedOption === 'iframe' ? (
         <div className="bg-gray-800 p-6 rounded-lg shadow-md">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-sm text-gray-400">HTML Embed Code (iframe)</span>
+            <span className="text-sm text-gray-400">HTML Embed Code</span>
             <button
               onClick={() => {
-                const code = `<iframe 
-  src="http://localhost:3000/embed/${botId}" 
-  width="400" 
-  height="600" 
-  style="border: none;"></iframe>`;
+                const code = `<iframe
+                src="http://localhost:3000/embed/${botId}" 
+                width="400" 
+                height="60099" 
+                />
+              `;
                 navigator.clipboard.writeText(code);
                 // toast.success("Code copied to clipboard!");
               }}
@@ -476,11 +477,13 @@ const BotDetail = () => {
             </button>
           </div>
           <pre className="bg-[#1a1a1a] p-4 rounded-lg overflow-x-auto text-sm text-gray-300">
-            {`<iframe 
-  src="http://localhost:3000/embed/${botId}" 
+            {
+            `<iframe
+  src="http://localhost:3000/embed/${botId}"
   width="400" 
   height="600"
-  style="border: none;"></iframe>`}
+ />
+`}
           </pre>
         </div>
       ) : (
@@ -489,7 +492,7 @@ const BotDetail = () => {
             <span className="text-sm text-gray-400">JavaScript Embed Code (Chat Bubble)</span>
             <button
               onClick={() => {
-                const code = `<script id="${botId}" src="http://localhost:3000/embed.js" open="false" openDelay="2000"></script>`;
+                const code = `<script id="${botId}" src="http://localhost:3000/embed.js" > </script>`;
                 navigator.clipboard.writeText(code);
                 toast.success("Code copied to clipboard!");
               }}
@@ -499,7 +502,7 @@ const BotDetail = () => {
             </button>
           </div>
           <pre className="bg-[#1a1a1a] p-4 rounded-lg overflow-x-auto text-sm text-gray-300">
-            {`<script id="${botId}" src="http://localhost:3000/embed.js" open="false" openDelay="2000"></script>`}
+            {`<script id="${botId}" src="http://localhost:3000/embed.js" ></script>`}
           </pre>
           <div className="mt-6 p-4 bg-gray-700 rounded-lg text-sm text-gray-300 border-l-4 border-indigo-500">
             <span className="font-semibold block mb-2">Script Parameters:</span>
@@ -517,7 +520,7 @@ const BotDetail = () => {
       <div className="p-8 border border-gray-700 bg-gray-900 rounded-lg">
         <h2 className="text-lg font-semibold mb-6 text-white">Preview</h2>
         {embedOption === 'iframe' ? (
-          <div className="border border-gray-700 rounded-lg overflow-hidden" style={{ height: "500px" }}>
+          <div className="border border-gray-700 rounded-lg overflow-hidden place-self-center h-[630px]">
             <ChatBot botId={botId as string} botName={bot.name} />
           </div>
         ) : (
