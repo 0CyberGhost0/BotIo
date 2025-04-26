@@ -9,6 +9,11 @@
   "peerDependencies": {
     "typescript": "^5"
   },
+"scripts": {
+  "dev": "bun run --watch index.ts",
+  "start": "bun run index.ts",
+  "postinstall": "cd ../../packages/db && bun install && npx prisma migrate deploy"
+}
   "dependencies": {
     "@clerk/clerk-sdk-node": "^5.1.6",
     "@clerk/express": "^1.4.7",

@@ -8,11 +8,7 @@ import cors from "cors";
 
 const app = express();
 
-app.use(cors({
-    origin: '*', // In production, restrict this to specific domains
-    methods: ['GET', 'POST'],
-    credentials: false
-  }));
+app.use(cors());
 app.use(express.json());
 
 

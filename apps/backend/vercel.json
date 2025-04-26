@@ -1,0 +1,14 @@
+{
+    "version": 2,
+    "buildCommand": "npm install -g bun && bun install",
+    "installCommand": "npm install -g bun && bun install",
+    "builds": [
+      {
+        "src": "index.ts",
+        "use": "@vercel/node"
+      }
+    ],
+    "routes": [
+      { "src": "/(.*)", "dest": "index.ts" }
+    ]
+  }
