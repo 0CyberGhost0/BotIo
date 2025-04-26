@@ -164,14 +164,32 @@ async function extractTextFromURL(url) {
   }
   
 
-async function extractTextFromNotionPage(pageId) {
-  console.log(pageId);
-  const blocks = await notion.blocks.children.list({ block_id: pageId });
-  console.log(blocks);
-  return blocks.results.map(block => {
+async function extractTextFromNotionPage(notionUrl) {
+  const pageId = extractNotionPageId(notionUrl);
+  if (!pageId) throw new Error('Invalid Notion URL');
+
+  // Notion API expects dashed format
+  const dashedPageId = [
+    pageId.slice(0, 8),
+    pageId.slice(8, 12),
+    pageId.slice(12, 16),
+    pageId.slice(16, 20),
+    pageId.slice(20)
+  ].join('-');
+
+  // Fetch top-level blocks
+  const blocks = await notion.blocks.children.list({ block_id: dashedPageId });
+
+  // Extract plain text from each block
+  const texts = blocks.results.map(block => {
     const type = block.type;
-    return block[type]?.text?.[0]?.plain_text || '';
-  }).join(' ');
+    if (block[type] && block[type].text) {
+      return block[type].text.map(t => t.plain_text).join('');
+    }
+    return '';
+  });
+
+  return texts.join(' ').trim();
 }
 
 module.exports = {

@@ -78,9 +78,9 @@ const ChatBot = ({ botId, initialChatId }: ChatbotProps) => {
             authHeader
           );
           const chatData = response.data;
-          setChatId(chatData.id);
-          setMessages(chatData.messages);
-          setBotName(chatData.bot.name);
+          setChatId(chatData?.id);
+          setMessages(chatData?.messages);
+          setBotName(chatData?.bot.name);
         } else {
           const response = await axios.post(
             "http://localhost:8000/bots/chat/create",

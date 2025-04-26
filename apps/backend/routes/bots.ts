@@ -16,6 +16,8 @@ import {
   extractTextFromNotionPage,
 } from "../utils/extractText";
 import {getSystemPrompt} from "../utils/getSystemPrompt";
+import usage = require("../utils/usage");
+import {incrementUsage} from  "../utils/usage";
 
 const router = express.Router();
 
@@ -68,11 +70,21 @@ router.post("/create", authMiddleware, async (req, res) => {
         ownerId: true,
       },
     });
+    await incrementUsage(req.userId, "botCount", 1);
     res.json(bot);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
+});
+
+router.get("/usage",authMiddleware, async (req, res) => {
+  console.log("HIT USAGE");
+  const usage = await prismaClient.userUsage.findUnique({
+    where: { userId: req.userId },
+  });
+  console.log(usage);
+  res.json(usage);
 });
 
 router.get("/:id", authMiddleware, async (req, res) => {
@@ -183,6 +195,8 @@ if (!finalTitle) {
     if (file) {
       await fs.unlink(file.path);
     }
+    await incrementUsage(req.userId, "sourcesCount", 1);
+
 
     res.json(source);
   } catch (error) {
@@ -266,9 +280,9 @@ router.post("/chat/create", authMiddleware, async (req, res) => {
     // Verify bot exists
     const bot = await prismaClient.bot.findUnique({ where: { id: botId } });
     if (!bot) {
+      console.log("BOT NOT FOUND");
       return res.status(404).json({ error: "Bot not found" });
     }
-    
     // Create new chat
     const chat = await prismaClient.chat.create({
       data: {
@@ -352,6 +366,7 @@ console.log(response.text);
       where: { id },
       data: { updatedAt: new Date() }
     });
+    await incrementUsage(req.userId, "responsesUsed", 1);
     
     res.json({
       userMessage,
@@ -483,5 +498,6 @@ router.post("/embed/chat/:id/message", async (req, res) => {
     res.status(500).json({ error: "Failed to send message" });
   }
 });
+
 
 export default router;

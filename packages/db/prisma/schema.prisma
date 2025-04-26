@@ -8,28 +8,29 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  clerkId   String   @unique
-  email     String   @unique
+  id        String     @id @default(uuid())
+  clerkId   String     @unique
+  email     String     @unique
   password  String
   name      String
-  bots      Bot[]    // One user can own many bots
+  bots      Bot[] // One user can own many bots
   chats     Chat[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  UserUsage UserUsage?
 }
 
 model Bot {
-  id          String    @id @default(uuid())
+  id          String   @id @default(uuid())
   name        String
   description String
-  model       String    // e.g., "gpt-4o"
+  model       String // e.g., "gpt-4o"
   ownerId     String
-  owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   sources     Source[]
   chats       Chat[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Source {
@@ -44,16 +45,16 @@ model Source {
 }
 
 model Chat {
-  id          String        @id @default(uuid())
-  botId       String
-  userId      String?       // Nullable for anonymous users
-  isEmbedded  Boolean       @default(false)
-  messages    ChatMessage[]
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id         String        @id @default(uuid())
+  botId      String
+  userId     String? // Nullable for anonymous users
+  isEmbedded Boolean       @default(false)
+  messages   ChatMessage[]
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
 
-  bot         Bot           @relation(fields: [botId], references: [id])
-  user        User?         @relation(fields: [userId], references: [id])
+  bot  Bot   @relation(fields: [botId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
 }
 
 model ChatMessage {
@@ -63,6 +64,15 @@ model ChatMessage {
   chatId    String
   chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+}
+
+model UserUsage {
+  id            String @id @default(cuid())
+  userId        String @unique
+  responsesUsed Int    @default(0)
+  botCount      Int    @default(0)
+  sourcesCount  Int    @default(0)
+  user          User   @relation(fields: [userId], references: [id])
 }
 
 enum SourceType {

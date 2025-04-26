@@ -15,7 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BotIO",
+
+  title: "BotIO - AI Chatbot",
   description: "AI Chatbot trained on your data",
 };
 

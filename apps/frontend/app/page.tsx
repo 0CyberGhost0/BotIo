@@ -1,11 +1,21 @@
 "use client";
 
-import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter } from 'next/navigation';
+
 import { useAuth, SignInButton, SignUpButton } from "@clerk/nextjs";
 import ChatBot from "./components/ChatBot";
 
 const Home = () => {
   const { isSignedIn } = useAuth();
+  const router = useRouter();
+
+
+  useEffect(() => {
+    if (isSignedIn) {
+      router.push("/dashboard");
+    }
+  }, [isSignedIn, router]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-950 to-black text-white">
@@ -41,14 +51,7 @@ const Home = () => {
                 </button>
               </SignUpButton>
             </>
-          ) : (
-            <Link
-              href="/dashboard"
-              className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg transition"
-            >
-              Dashboard
-            </Link>
-          )}
+          ) : null}
         </div>
       </header>
 
@@ -98,12 +101,7 @@ const Home = () => {
 
         <div className="lg:w-1/2">
           <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl shadow-xl p-6">
-            {/* <div className="border-b border-white/10 pb-3 mb-4">
-              {/* <div className="bg-indigo-700/20 text-indigo-300 text-xs font-medium px-2 py-1 rounded">
-                LIVE DEMO
-              </div> */}
-            {/* </div> */} 
-            <ChatBot botId="iz5ede16ydb" botName="Demo Bot" />
+            <ChatBot botId="initial" botName="Demo Bot" />
           </div>
         </div>
       </main>

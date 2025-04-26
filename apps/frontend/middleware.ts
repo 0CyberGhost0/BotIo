@@ -1,9 +1,15 @@
-import { clerkMiddleware } from '@clerk/nextjs/server'
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
-export default clerkMiddleware({
-  sessionConfig: {
-    expiresIn: 7 * 24 * 60 * 60, // 7 days in seconds
-  },
+const isPublicRoute = createRouteMatcher(['/'])
+
+export default clerkMiddleware(async (auth, req) => {
+  const { userId, redirectToSignIn } = await auth()
+
+  if (!userId && !isPublicRoute(req)) {
+    // Add custom logic to run before redirecting
+
+    return redirectToSignIn();
+  }
 })
 
 export const config = {
